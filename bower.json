@@ -1,0 +1,18 @@
+{
+  "name": "purescript-psom-player",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-school-of-music": "https://github.com/newlandsvalley/purescript-school-of-music.git",
+    "purescript-soundfonts": "https://github.com/newlandsvalley/purescript-polyphonic-soundfonts.git",
+    "purescript-soundfont-player": "https://github.com/newlandsvalley/purescript-soundfont-player.git",
+    "purescript-pux": "^9.1.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0"
+  }
+}
