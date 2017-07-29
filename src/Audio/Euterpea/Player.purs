@@ -2,15 +2,14 @@ module Audio.Euterpea.Player
   (State, Event (SetPerformance, SetInstrumentMap), initialState, foldp, view) where
 
 import Prelude ((&&), (==))
+import Audio.SoundFont (AUDIO)
 import Audio.BasePlayer as BasePlayer
 import Audio.Euterpea.ToMelody (perf2melody)
 import Data.Euterpea.Instrument (InstrumentMap)
 import Data.Euterpea.Midi.MEvent
 import Data.Function (($), (#))
 import Data.Array (null)
-import Data.Map (empty)
 import Data.Maybe (Maybe(..))
-import Audio.SoundFont (AUDIO)
 import Pux (EffModel, noEffects, mapEffects, mapState)
 import Pux.DOM.HTML (HTML, mapEvent)
 
@@ -26,10 +25,10 @@ type State =
   , basePlayer :: BasePlayer.State
   }
 
-initialState :: State
-initialState =
+initialState :: InstrumentMap -> State
+initialState instrumentMap =
   { melodySource : Nothing
-  , instrumentMap : empty
+  , instrumentMap : instrumentMap
   , basePlayer : BasePlayer.initialState
   }
 
