@@ -5,7 +5,7 @@ import Prelude ((&&), (==))
 import Audio.SoundFont (AUDIO)
 import Audio.BasePlayer as BasePlayer
 import Audio.Euterpea.ToMelody (perf2melody)
-import Data.Euterpea.Instrument (InstrumentMap)
+import Data.Midi.Instrument (InstrumentMap)
 import Data.Euterpea.Midi.MEvent
 import Data.Function (($), (#))
 import Data.Array (null)

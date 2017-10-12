@@ -1,7 +1,7 @@
 module Audio.Euterpea.ToMelody (perf2melody) where
 
 import Prelude (($), (+), (-), (/), (>))
-import Data.Euterpea.Instrument (InstrumentName, InstrumentMap, gleitzmanName)
+import Data.Midi.Instrument (InstrumentName, InstrumentMap, gleitzmanName)
 import Data.Euterpea.Midi.MEvent (Performance, MEvent(..))
 import Audio.BasePlayer(Melody, MidiPhrase)
 import Audio.SoundFont (MidiNote)
