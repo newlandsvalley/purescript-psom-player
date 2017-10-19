@@ -1,10 +1,10 @@
 module Audio.Euterpea.ToMelody (perf2melody) where
 
 import Prelude (($), (+), (-), (/), (>))
-import Data.Midi.Instrument (InstrumentName, InstrumentMap, gleitzmanName)
+import Data.Midi.Instrument (InstrumentName)
+import Audio.SoundFont (InstrumentChannels, MidiNote)
 import Data.Euterpea.Midi.MEvent (Performance, MEvent(..))
 import Audio.BasePlayer(Melody, MidiPhrase)
-import Audio.SoundFont (MidiNote)
 import Data.Rational (toNumber) as R
 import Data.Int (toNumber) as I
 import Data.Array (reverse, (:))
@@ -58,10 +58,10 @@ getFinal (Accum a) = a.final
 phraseCutoff :: Number
 phraseCutoff = 0.8
 
-perf2melody :: InstrumentMap -> Performance -> Melody
-perf2melody im p =
+perf2melody :: InstrumentChannels -> Performance -> Melody
+perf2melody ics p =
   let
-    acc = perf2accum im p
+    acc = perf2accum ics p
     pendingCutoff = getPendingCutoff acc
     rlength = getRunningLength acc
     final = case pendingCutoff of
@@ -75,8 +75,8 @@ perf2melody im p =
   in
     reverse final
 
-perf2accum :: InstrumentMap -> Performance -> Accum
-perf2accum im p =
+perf2accum :: InstrumentChannels -> Performance -> Accum
+perf2accum instrumentChans p =
   foldl f initialAccum p
     where
       f:: Accum -> MEvent -> Accum
@@ -86,7 +86,7 @@ perf2accum im p =
              let
                rlength = getRunningLength acc
                nextNote :: MidiNote
-               nextNote = event2note im me
+               nextNote = event2note instrumentChans me
              in
                case getPendingCutoff acc of
                  Just lastNote ->
@@ -139,10 +139,10 @@ perf2accum im p =
                          , runningLength : rlength
                         }
 
-event2note :: InstrumentMap -> MEvent -> MidiNote
-event2note im (MEvent e) =
+event2note :: InstrumentChannels -> MEvent -> MidiNote
+event2note instrumentChans (MEvent e) =
   let
-    channel = chan e.eInst im
+    channel = chan e.eInst instrumentChans
   in
     note channel e.ePitch (R.toNumber e.eTime) (R.toNumber e.eDur)  (I.toNumber e.eVol / 125.0)
 
@@ -151,9 +151,9 @@ note channel id timeOffset duration gain =
   { channel : channel, id : id, timeOffset : timeOffset, duration : duration, gain : gain }
 
 -- | look up the instrument in the map, defaulting to channel 0
-chan :: InstrumentName -> InstrumentMap -> Int
-chan inst instrumentMap  =
-  fromMaybe 0 $ lookup (gleitzmanName inst) instrumentMap
+chan :: InstrumentName -> InstrumentChannels -> Int
+chan inst instrumentChans  =
+  fromMaybe 0 $ lookup inst instrumentChans
 
 
 {-

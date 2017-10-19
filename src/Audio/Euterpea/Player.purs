@@ -1,11 +1,10 @@
 module Audio.Euterpea.Player
-  (State, Event (SetPerformance, SetInstrumentMap), initialState, foldp, view) where
+  (State, Event (SetPerformance, SetInstrumentChannels), initialState, foldp, view) where
 
 import Prelude ((&&), (==))
-import Audio.SoundFont (AUDIO)
+import Audio.SoundFont (AUDIO, Instrument, InstrumentChannels)
 import Audio.BasePlayer as BasePlayer
 import Audio.Euterpea.ToMelody (perf2melody)
-import Data.Midi.Instrument (InstrumentMap)
 import Data.Euterpea.Midi.MEvent
 import Data.Function (($), (#))
 import Data.Array (null)
@@ -16,27 +15,27 @@ import Pux.DOM.HTML (HTML, mapEvent)
 
 data Event =
     SetPerformance Performance       -- we'll set the melody from the Euterpea Performance
-  | SetInstrumentMap InstrumentMap
+  | SetInstrumentChannels InstrumentChannels
   | BasePlayerEvent BasePlayer.Event
 
 type State =
   { melodySource :: Maybe Performance
-  , instrumentMap :: InstrumentMap
+  , instrumentChans :: InstrumentChannels
   , basePlayer :: BasePlayer.State
   }
 
-initialState :: InstrumentMap -> State
-initialState instrumentMap =
+initialState :: InstrumentChannels -> State
+initialState instrumentChans =
   { melodySource : Nothing
-  , instrumentMap : instrumentMap
+  , instrumentChans : instrumentChans
   , basePlayer : BasePlayer.initialState
   }
 
 foldp :: ∀ fx. Event -> State -> EffModel State Event (au :: AUDIO | fx)
 foldp (SetPerformance performance) state =
   noEffects $ setPerformance performance state
-foldp (SetInstrumentMap instrumentMap) state =
-    noEffects $ state { instrumentMap = instrumentMap }
+foldp (SetInstrumentChannels instrumentChans) state =
+    noEffects $ state { instrumentChans = instrumentChans }
 foldp (BasePlayerEvent e) state =
   let
     -- establish the melody only when the Play button is first pressed
@@ -51,6 +50,14 @@ foldp (BasePlayerEvent e) state =
   in
     delegate e newState
 
+-- | set the instrument soudfonts to use
+setInstruments :: Array Instrument -> State -> State
+setInstruments instruments state =
+  let
+    bpState = BasePlayer.setInstruments instruments state.basePlayer
+  in
+    state { basePlayer = bpState }
+
 -- | set a PSoM Performance
 setPerformance :: Performance -> State -> State
 setPerformance performance state =
@@ -59,7 +66,6 @@ setPerformance performance state =
   in
     state { melodySource = Just performance, basePlayer = bpState }
 
-
 -- | delegate to the Base Player
 delegate :: ∀ fx. BasePlayer.Event -> State -> EffModel State Event (au :: AUDIO | fx)
 delegate e state =
@@ -67,14 +73,14 @@ delegate e state =
     # mapEffects BasePlayerEvent
     # mapState \pst -> state { basePlayer = pst }
 
--- | establish the Base Player melody from thh performance (if we have it)
+-- | establish the Base Player melody from the performance (if we have it)
 establishMelody :: State -> State
 establishMelody state =
   let
     melody =
       case state.melodySource of
         Just performance ->
-          perf2melody state.instrumentMap performance
+          perf2melody state.instrumentChans performance
         _ ->
          []
     bpState = BasePlayer.setMelody melody state.basePlayer

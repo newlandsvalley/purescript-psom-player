@@ -7,10 +7,8 @@
     "output"
   ],
   "dependencies": {
-    "purescript-school-of-music": "https://github.com/newlandsvalley/purescript-school-of-music.git#1.0.0",
-    "purescript-soundfonts": "https://github.com/newlandsvalley/purescript-polyphonic-soundfonts.git#1.0.0",
-    "purescript-soundfont-player": "https://github.com/newlandsvalley/purescript-soundfont-player.git#1.0.0",
-    "purescript-pux": "^9.1.0"
+    "purescript-school-of-music": "https://github.com/newlandsvalley/purescript-school-of-music.git#1.1.0",
+    "purescript-soundfont-player": "https://github.com/newlandsvalley/purescript-soundfont-player.git#1.1.2"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
