@@ -1,8 +1,8 @@
 module Audio.Euterpea.Player
-  (State, Event (SetPerformance, SetInstrumentChannels), initialState, foldp, view, setInstruments) where
+  (State, Event (SetPerformance), initialState, foldp, view, setInstruments) where
 
 import Prelude ((&&), (==))
-import Audio.SoundFont (AUDIO, Instrument, InstrumentChannels)
+import Audio.SoundFont (AUDIO, Instrument, instrumentChannels)
 import Audio.BasePlayer as BasePlayer
 import Audio.Euterpea.ToMelody (perf2melody)
 import Data.Euterpea.Midi.MEvent
@@ -12,30 +12,24 @@ import Data.Maybe (Maybe(..))
 import Pux (EffModel, noEffects, mapEffects, mapState)
 import Pux.DOM.HTML (HTML, mapEvent)
 
-
 data Event =
     SetPerformance Performance       -- we'll set the melody from the Euterpea Performance
-  | SetInstrumentChannels InstrumentChannels
   | BasePlayerEvent BasePlayer.Event
 
 type State =
   { melodySource :: Maybe Performance
-  , instrumentChans :: InstrumentChannels
   , basePlayer :: BasePlayer.State
   }
 
-initialState :: InstrumentChannels -> State
-initialState instrumentChans =
+initialState :: Array Instrument -> State
+initialState instruments =
   { melodySource : Nothing
-  , instrumentChans : instrumentChans
-  , basePlayer : BasePlayer.initialState
+  , basePlayer : BasePlayer.initialState instruments
   }
 
 foldp :: ∀ fx. Event -> State -> EffModel State Event (au :: AUDIO | fx)
 foldp (SetPerformance performance) state =
   noEffects $ setPerformance performance state
-foldp (SetInstrumentChannels instrumentChans) state =
-    noEffects $ state { instrumentChans = instrumentChans }
 foldp (BasePlayerEvent e) state =
   let
     -- establish the melody only when the Play button is first pressed
@@ -80,7 +74,10 @@ establishMelody state =
     melody =
       case state.melodySource of
         Just performance ->
-          perf2melody state.instrumentChans performance
+          let
+            instrumentChans = instrumentChannels state.basePlayer.instruments
+          in
+            perf2melody instrumentChans performance
         _ ->
          []
     bpState = BasePlayer.setMelody melody state.basePlayer
