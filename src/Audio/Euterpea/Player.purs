@@ -1,5 +1,5 @@
 module Audio.Euterpea.Player
-  (State, Event (SetPerformance, SetInstrumentChannels), initialState, foldp, view) where
+  (State, Event (SetPerformance, SetInstrumentChannels), initialState, foldp, view, setInstruments) where
 
 import Prelude ((&&), (==))
 import Audio.SoundFont (AUDIO, Instrument, InstrumentChannels)
