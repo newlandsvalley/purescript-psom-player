@@ -7,10 +7,13 @@
     "output"
   ],
   "dependencies": {
-    "purescript-school-of-music": "https://github.com/newlandsvalley/purescript-school-of-music.git#1.1.0",
-    "purescript-soundfont-player": "https://github.com/newlandsvalley/purescript-soundfont-player.git#1.1.4"
+    "purescript-school-of-music": "https://github.com/newlandsvalley/purescript-school-of-music.git#1.1.1",
+    "purescript-soundfont-player": "https://github.com/newlandsvalley/purescript-soundfont-player.git#1.2.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
+  },
+  "resolutions": {
+    "purescript-arraybuffer-types": "^2.0.0"
   }
 }

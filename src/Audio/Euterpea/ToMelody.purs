@@ -3,8 +3,8 @@ module Audio.Euterpea.ToMelody (perf2melody) where
 import Prelude (($), (+), (-), (/), (>))
 import Data.Midi.Instrument (InstrumentName)
 import Audio.SoundFont (InstrumentChannels, MidiNote)
+import Audio.SoundFont.Melody (Melody, MidiPhrase)
 import Data.Euterpea.Midi.MEvent (Performance, MEvent(..))
-import Audio.BasePlayer(Melody, MidiPhrase)
 import Data.Rational (toNumber) as R
 import Data.Int (toNumber) as I
 import Data.Array (reverse, (:))
