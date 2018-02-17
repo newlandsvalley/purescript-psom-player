@@ -22,6 +22,6 @@ dependencies
 | Module                     | Reference                                                              |
 | -------------------------- | ---------------------------------------------------------------------- |
 | purescript-school-of-Music | https://github.com/newlandsvalley/purescript-school-of-music.git       |
-| purescript-soundfonts      | https://github.com/newlandsvalley/purescript-polyphonic-soundfonts.git |
+| purescript-soundfonts      | 2.0.0                                                                  |
 | purescript-soundont_player | https://github.com/newlandsvalley/purescript-soundfont_player.git      |
 | purescript-pux             | 9.1.0                                                                  |
